@@ -16,11 +16,11 @@
         "php": "^7.4",
         "bshaffer/oauth2-server-php": ">=1.0",
         "bshaffer/oauth2-server-httpfoundation-bridge": "^1.2",
-        "symfony/console": "^5.1.0",
-        "symfony/dependency-injection": "^5.1.0"
+        "symfony/console": "^4.4.0|^5.1.0",
+        "symfony/dependency-injection": "^4.4.0|^5.1.0"
     },
     "require-dev": {
-        "symfony/symfony": "^5.1.0",
+        "symfony/symfony": "^4.4.0|^5.1.0",
         "doctrine/orm": "^2.4"
     },
     "autoload": {
