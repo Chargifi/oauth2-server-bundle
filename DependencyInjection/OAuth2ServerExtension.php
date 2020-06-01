@@ -20,6 +20,6 @@ class OAuth2ServerExtension extends Extension
 
     public function getAlias()
     {
-        return 'oauth2';
+        return 'o_auth2_server';
     }
 }
