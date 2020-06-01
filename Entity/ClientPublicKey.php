@@ -2,71 +2,46 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * Client
+ * @ORM\Table(name="oauth_client_public_key")
+ * @ORM\Entity()
  */
 class ClientPublicKey
 {
     /**
-     * @var \OAuth2\ServerBundle\Entity\Client
+     * @ORM\ManyToOne(targetEntity="Client")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="client_id", onDelete="CASCADE", onUpdate="CASCADE")
+     * @ORM\Id
      */
-    private $client;
+    private ?Client $client_id;
 
     /**
-     * @var integer
+     * @ORM\Column(name="public_key", type="text")
      */
-    private $client_id;
+    private string $public_key;
 
-    /**
-     * @var string
-     */
-    private $public_key;
-
-    /**
-     * Set client
-     *
-     * @param  \OAuth2\ServerBundle\Entity\Client $client
-     * @return ClientPublicKey
-     */
-    public function setClient(\OAuth2\ServerBundle\Entity\Client $client = null)
+    public function setClient(?Client $client = null): self
     {
-        $this->client = $client;
-
-        // this is necessary as the client_id is the primary key
-        $this->client_id = $client->getClientId();
+        $this->client_id = $client;
 
         return $this;
     }
 
-    /**
-     * Get client
-     *
-     * @return \OAuth2\ServerBundle\Entity\Client
-     */
-    public function getClient()
+    public function getClient(): ?Client
     {
-        return $this->client;
+        return $this->client_id;
     }
 
-    /**
-     * Set public key
-     *
-     * @param  string  $public_key
-     * @return Client
-     */
-    public function setPublicKey($public_key)
+    public function setPublicKey(string $public_key): self
     {
         $this->public_key = $public_key;
 
         return $this;
     }
 
-    /**
-     * Get public key
-     *
-     * @return string
-     */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->public_key;
     }

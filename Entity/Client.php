@@ -2,175 +2,97 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * Client
+ * @ORM\Table(name="oauth_client")
+ * @ORM\Entity()
  */
 class Client
 {
     /**
-     * @var string
+     * @ORM\Column(name="client_id", type="string", length=50)
+     * @ORM\Id
      */
-    private $client_id;
+    private ?string $client_id = null;
 
     /**
-     * @var string
+     * @ORM\Column(name="client_secret", type="string", length=40, nullable=true)
      */
-    private $client_secret;
+    private ?string $client_secret = null;
 
     /**
-     * @var array
+     * @ORM\Column(name="redirect_uri", type="simple_array")
      */
-    private $redirect_uri;
+    private array $redirect_uri = [];
 
     /**
-     * @var \OAuth2\ServerBundle\Entity\ClientPublicKey $public_key
+     * @ORM\Column(name="grant_types", type="simple_array", nullable=true)
      */
-    private $grant_types;
+    private ?array $grant_types = null;
 
     /**
-     * @var string
+     * @ORM\Column(name="scopes", type="simple_array", nullable=true)
      */
-    private $public_key;
+    private ?array $scopes = null;
 
-    /**
-     * Set client_id
-     *
-     * @param  string $clientId
-     * @return Client
-     */
-    public function setClientId($clientId)
+    public function setClientId(?string $clientId): self
     {
         $this->client_id = $clientId;
 
         return $this;
     }
 
-    /**
-     * Get client_id
-     *
-     * @return string
-     */
-    public function getClientId()
+    public function getClientId(): ?string
     {
         return $this->client_id;
     }
 
-    /**
-     * Set client_secret
-     *
-     * @param  string $clientSecret
-     * @return Client
-     */
-    public function setClientSecret($clientSecret)
+    public function setClientSecret(?string $clientSecret): self
     {
         $this->client_secret = $clientSecret;
 
         return $this;
     }
 
-    /**
-     * Get client_secret
-     *
-     * @return string
-     */
-    public function getClientSecret()
+    public function getClientSecret(): ?string
     {
         return $this->client_secret;
     }
 
-    /**
-     * Set redirect_uri
-     *
-     * @param  array  $redirectUri
-     * @return Client
-     */
-    public function setRedirectUri($redirectUri)
+    public function setRedirectUri(array $redirectUri): self
     {
         $this->redirect_uri = $redirectUri;
 
         return $this;
     }
 
-    /**
-     * Get redirect_uri
-     *
-     * @return array
-     */
-    public function getRedirectUri()
+    public function getRedirectUri(): array
     {
         return $this->redirect_uri;
     }
 
-    /**
-     * Set grant_types
-     *
-     * @param  array  $grantTypes
-     * @return Client
-     */
-    public function setGrantTypes($grantTypes)
+    public function setGrantTypes(?array $grantTypes = null): self
     {
         $this->grant_types = $grantTypes;
 
         return $this;
     }
 
-    /**
-     * Get grant_types
-     *
-     * @return array
-     */
-    public function getGrantTypes()
+    public function getGrantTypes(): ?array
     {
         return $this->grant_types;
     }
-    /**
-     * @var array
-     */
-    private $scopes;
 
-    /**
-     * Set scopes
-     *
-     * @param  array  $scopes
-     * @return Client
-     */
-    public function setScopes($scopes)
+    public function setScopes(?array $scopes = null): self
     {
         $this->scopes = $scopes;
 
         return $this;
     }
 
-    /**
-     * Get scopes
-     *
-     * @return array
-     */
-    public function getScopes()
+    public function getScopes(): ?array
     {
         return $this->scopes;
-    }
-
-    /**
-     * Set public key
-     *
-     * @param  \OAuth2\ServerBundle\Entity\ClientPublicKey $public_key
-     * @return Client
-     */
-    public function setPublicKey(\OAuth2\ServerBundle\Entity\ClientPublicKey $public_key = null)
-    {
-        $this->public_key = $public_key;
-
-        return $this;
-    }
-
-    /**
-     * Get public key
-     *
-     * @return \OAuth2\ServerBundle\Entity\ClientPublicKey
-     */
-    public function getPublicKey()
-    {
-        return $this->public_key;
     }
 }

@@ -2,91 +2,68 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * RefreshToken
+ * @ORM\Table(name="oauth_refresh_token")
+ * @ORM\Entity()
  */
 class RefreshToken
 {
     /**
-     * @var string
+     * @ORM\Column(name="token", type="string", length=40)
+     * @ORM\Id
      */
-    private $token;
+    private ?string $token = null;
 
     /**
-     * @var string
+     * @ORM\Column(name="user_id", type="string", length=100, nullable=true)
      */
-    private $user_id;
+    private ?string $user_id = null;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="token", type="datetime")
      */
-    private $expires;
+    private \DateTimeInterface $expires;
 
     /**
-     * @var string
+     * @ORM\Column(name="scope", type="string", length=255, nullable=true)
      */
-    private $scope;
+    private ?string $scope = null;
 
     /**
-     * @var \OAuth2\ServerBundle\Entity\Client
+     * @ORM\ManyToOne(targetEntity="Client")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="client_id", onDelete="CASCADE", onUpdate="CASCADE")
      */
-    private $client;
+    private ?Client $client = null;
 
-    /**
-     * Set token
-     *
-     * @param  string       $token
-     * @return RefreshToken
-     */
-    public function setToken($token)
+    public function setToken(string $token): self
     {
         $this->token = $token;
 
         return $this;
     }
 
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
-    /**
-     * Set user_id
-     *
-     * @param  string       $userId
-     * @return RefreshToken
-     */
-    public function setUserId($userId)
+    public function setUserId(?string $userId): self
     {
         $this->user_id = $userId;
 
         return $this;
     }
 
-    /**
-     * Get user_id
-     *
-     * @return string
-     */
-    public function getUserId()
+    public function getUserId(): ?string
     {
         return $this->user_id;
     }
 
-    /**
-     * Set expires
-     *
-     * @param  \DateTime    $expires
-     * @return RefreshToken
-     */
-    public function setExpires($expires)
+    public function setExpires($expires): self
     {
-        if (!$expires instanceof \DateTime) {
+        if (!$expires instanceof \DateTimeInterface) {
             // @see https://github.com/bshaffer/oauth2-server-bundle/issues/24
             $dateTime = new \DateTime();
             $dateTime->setTimestamp($expires);
@@ -98,58 +75,31 @@ class RefreshToken
         return $this;
     }
 
-    /**
-     * Get expires
-     *
-     * @return \DateTime
-     */
-    public function getExpires()
+    public function getExpires(): \DateTimeInterface
     {
         return $this->expires;
     }
 
-    /**
-     * Set scope
-     *
-     * @param  string       $scope
-     * @return RefreshToken
-     */
-    public function setScope($scope)
+    public function setScope(?string $scope = null): self
     {
         $this->scope = $scope;
 
         return $this;
     }
 
-    /**
-     * Get scope
-     *
-     * @return string
-     */
-    public function getScope()
+    public function getScope(): ?string
     {
         return $this->scope;
     }
 
-    /**
-     * Set client
-     *
-     * @param  \OAuth2\ServerBundle\Entity\Client $client
-     * @return RefreshToken
-     */
-    public function setClient(\OAuth2\ServerBundle\Entity\Client $client = null)
+    public function setClient(?Client $client = null): self
     {
         $this->client = $client;
 
         return $this;
     }
 
-    /**
-     * Get client
-     *
-     * @return \OAuth2\ServerBundle\Entity\Client
-     */
-    public function getClient()
+    public function getClient(): ?Client
     {
         return $this->client;
     }

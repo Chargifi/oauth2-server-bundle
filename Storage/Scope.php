@@ -2,18 +2,15 @@
 
 namespace OAuth2\ServerBundle\Storage;
 
+use OAuth2\ServerBundle\Entity\Client;
 use OAuth2\Storage\ScopeInterface;
 use OAuth2\ServerBundle\Manager\ScopeManagerInterface;
 use Doctrine\ORM\EntityManager;
 
 class Scope implements ScopeInterface
 {
-    private $em;
-
-    /**
-     * @var ScopeManagerInterface
-     */
-    private $sm;
+    private EntityManager $em;
+    private ScopeManagerInterface $sm;
 
     public function __construct(EntityManager $entityManager, ScopeManagerInterface $scopeManager)
     {
@@ -37,7 +34,7 @@ class Scope implements ScopeInterface
         $scopes = explode(' ', $scope);
         if ($client_id) {
             // Get Client
-            $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+            $client = $this->em->getRepository(Client::class)->find($client_id);
 
             if (!$client) {
                 return false;

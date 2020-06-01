@@ -3,6 +3,7 @@
 namespace OAuth2\ServerBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use OAuth2\ServerBundle\Entity\Scope;
 
 class ScopeManager implements ScopeManagerInterface
 {
@@ -16,19 +17,15 @@ class ScopeManager implements ScopeManagerInterface
     /**
      * Creates a new scope
      *
-     * @param string $scope
-     *
-     * @param string $description
-     *
      * @return Scope
      */
-    public function createScope($scope, $description = null)
+    public function createScope(string $scope, string $description = '')
     {
         if ($scopeObject = $this->findScopeByScope($scope)) {
           return $scopeObject;
         }
 
-        $scopeObject = new \OAuth2\ServerBundle\Entity\Scope();
+        $scopeObject = new Scope();
         $scopeObject->setScope($scope);
         $scopeObject->setDescription($description);
 
@@ -42,12 +39,11 @@ class ScopeManager implements ScopeManagerInterface
     /**
      * Find a single scope by the scope
      *
-     * @param $scope
      * @return Scope
      */
-    public function findScopeByScope($scope)
+    public function findScopeByScope(string $scope)
     {
-        $scopeObject = $this->em->getRepository('OAuth2ServerBundle:Scope')->find($scope);
+        $scopeObject = $this->em->getRepository(Scope::class)->find($scope);
 
         return $scopeObject;
     }
@@ -60,7 +56,7 @@ class ScopeManager implements ScopeManagerInterface
      */
     public function findScopesByScopes(array $scopes)
     {
-        $scopeObjects = $this->em->getRepository('OAuth2ServerBundle:Scope')
+        $scopeObjects = $this->em->getRepository(Scope::class)
             ->createQueryBuilder('a')
             ->where('a.scope in (?1)')
             ->setParameter(1, $scopes)

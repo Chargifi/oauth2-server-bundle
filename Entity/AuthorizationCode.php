@@ -2,78 +2,66 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * AuthorizationCode
+ * @ORM\Table(name="oauth_authorization_code")
+ * @ORM\Entity()
  */
 class AuthorizationCode
 {
     /**
-     * @var string
+     * @ORM\Column(name="code", type="string", length=40)
+     * @ORM\Id
      */
-    private $code;
+    private ?string $code = null;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="expires", type="datetime")
      */
-    private $expires;
+    private \DateTimeInterface $expires;
 
     /**
-     * @var string
+     * @ORM\Column(name="user_id", type="string", length=100, nullable=true)
      */
-    private $user_id;
+    private ?string $user_id = null;
 
     /**
-     * @var array
+     * @ORM\Column(name="redirect_uris", type="simple_array", nullable=true)
      */
-    private $redirect_uri;
+    private array $redirect_uri = [];
 
     /**
-     * @var string
+     * @ORM\Column(name="scope", type="string", length=255, nullable=true)
      */
-    private $scope;
+    private ?string $scope = null;
 
     /**
-     * @var \OAuth2\ServerBundle\Entity\Client
+     * @ORM\ManyToOne(targetEntity="Client")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="client_id", onDelete="CASCADE", onUpdate="CASCADE")
      */
-    private $client;
+    private ?Client $client;
 
     /**
-     * @var string
+     * @ORM\Column(name="id_token", type="string", length=2000, nullable=true)
      */
-    private $id_token;
+    private ?string $id_token;
 
-    /**
-     * Set code
-     *
-     * @param  string            $code
-     * @return AuthorizationCode
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * Get code
-     *
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * Set expires
-     *
-     * @param  \DateTime|int $expires
-     * @return AuthorizationCode
-     */
-    public function setExpires($expires)
+    public function setExpires($expires): self
     {
-        if (!$expires instanceof \DateTime) {
+        if (!$expires instanceof \DateTimeInterface) {
             // @see https://github.com/bshaffer/oauth2-server-bundle/issues/24
             $dateTime = new \DateTime();
             $dateTime->setTimestamp($expires);
@@ -85,121 +73,68 @@ class AuthorizationCode
         return $this;
     }
 
-    /**
-     * Get expires
-     *
-     * @return \DateTime
-     */
-    public function getExpires()
+    public function getExpires(): \DateTimeInterface
     {
         return $this->expires;
     }
 
-    /**
-     * Set user_id
-     *
-     * @param  string            $userId
-     * @return AuthorizationCode
-     */
-    public function setUserId($userId)
+    public function setUserId(?string $userId): self
     {
         $this->user_id = $userId;
 
         return $this;
     }
 
-    /**
-     * Get user_id
-     *
-     * @return string
-     */
-    public function getUserId()
+    public function getUserId(): ?string
     {
         return $this->user_id;
     }
 
-    /**
-     * Set redirect_uri
-     *
-     * @param  string            $redirectUri
-     * @return AuthorizationCode
-     */
-    public function setRedirectUri($redirectUri)
+    public function setRedirectUri(string $redirectUri): self
     {
         $this->redirect_uri = explode(' ', $redirectUri);
 
         return $this;
     }
 
-    /**
-     * Get redirect_uri
-     *
-     * @return array
-     */
-    public function getRedirectUri()
+    public function getRedirectUri(): array
     {
         return $this->redirect_uri;
     }
 
-    /**
-     * Set scope
-     *
-     * @param  string            $scope
-     * @return AuthorizationCode
-     */
-    public function setScope($scope)
+    public function setScope(?string $scope): self
     {
         $this->scope = $scope;
 
         return $this;
     }
 
-    /**
-     * Get scope
-     *
-     * @return string
-     */
-    public function getScope()
+    public function getScope(): ?string
     {
         return $this->scope;
     }
 
-    /**
-     * Set client
-     *
-     * @param  \OAuth2\ServerBundle\Entity\Client $client
-     * @return AuthorizationCode
-     */
-    public function setClient(\OAuth2\ServerBundle\Entity\Client $client = null)
+    public function setClient(?\OAuth2\ServerBundle\Entity\Client $client = null): self
     {
         $this->client = $client;
 
         return $this;
     }
 
-    /**
-     * Get client
-     *
-     * @return \OAuth2\ServerBundle\Entity\Client
-     */
-    public function getClient()
+    public function getClient(): ?\OAuth2\ServerBundle\Entity\Client
     {
         return $this->client;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdToken()
+    public function getIdToken(): ?string
     {
-      return $this->id_token;
+        return $this->id_token;
     }
 
-    /**
-     * @param string $idToken
-     */
-    public function setIdToken($idToken)
+    public function setIdToken(?string $idToken): self
     {
-      $this->id_token = $idToken;
+        $this->id_token = $idToken;
+
+        return $this;
     }
 }

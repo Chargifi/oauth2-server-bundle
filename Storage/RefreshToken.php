@@ -2,12 +2,13 @@
 
 namespace OAuth2\ServerBundle\Storage;
 
+use OAuth2\ServerBundle\Entity\Client;
 use OAuth2\Storage\RefreshTokenInterface;
 use Doctrine\ORM\EntityManager;
 
 class RefreshToken implements RefreshTokenInterface
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $EntityManager)
     {
@@ -39,7 +40,8 @@ class RefreshToken implements RefreshTokenInterface
      */
     public function getRefreshToken($refresh_token)
     {
-        $refreshToken = $this->em->getRepository('OAuth2ServerBundle:RefreshToken')->find($refresh_token);
+        $refreshToken = $this->em->getRepository(\OAuth2\ServerBundle\Entity\RefreshToken::class)
+            ->find($refresh_token);
 
         if (!$refreshToken) {
             return null;
@@ -84,7 +86,8 @@ class RefreshToken implements RefreshTokenInterface
     public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
     {
         // Get Client Entity
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        /** @var Client $client */
+        $client = $this->em->getRepository(Client::class)->find($client_id);
         if (!$client) {
             return null;
         }
@@ -120,7 +123,8 @@ class RefreshToken implements RefreshTokenInterface
      */
     public function unsetRefreshToken($refresh_token)
     {
-        $refreshToken = $this->em->getRepository('OAuth2ServerBundle:RefreshToken')->find($refresh_token);
+        $refreshToken = $this->em->getRepository(\OAuth2\ServerBundle\Entity\RefreshToken::class)
+            ->find($refresh_token);
         $this->em->remove($refreshToken);
         $this->em->flush();
     }

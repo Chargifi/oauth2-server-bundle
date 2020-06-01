@@ -2,6 +2,7 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use OAuth2\ServerBundle\User\OAuth2UserInterface;
 
 /**

@@ -8,7 +8,7 @@ use OAuth2\ServerBundle\Entity\Client;
 
 class ClientCredentials implements ClientCredentialsInterface
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $EntityManager)
     {
@@ -34,7 +34,7 @@ class ClientCredentials implements ClientCredentialsInterface
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         // Get Client
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         // If client exists check secret
         if ($client) {
@@ -70,17 +70,17 @@ class ClientCredentials implements ClientCredentialsInterface
     public function getClientDetails($client_id)
     {
         // Get Client
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         if (!$client) {
             return false;
         }
 
-        return array(
+        return [
             'redirect_uri' => implode(' ', $client->getRedirectUri()),
             'client_id' => $client->getClientId(),
             'grant_types' => $client->getGrantTypes()
-        );
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ class ClientCredentials implements ClientCredentialsInterface
      */
     public function isPublicClient($client_id)
     {
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         if (!$client) {
             return false;
@@ -157,7 +157,7 @@ class ClientCredentials implements ClientCredentialsInterface
     public function getClientScope($client_id)
     {
         // Get Client
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         if (!$client) {
             return false;

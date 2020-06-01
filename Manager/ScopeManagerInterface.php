@@ -3,6 +3,7 @@
 namespace OAuth2\ServerBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use OAuth2\Storage\ScopeInterface;
 
 interface ScopeManagerInterface
 {
@@ -11,21 +12,15 @@ interface ScopeManagerInterface
     /**
      * Creates a new scope
      *
-     * @param string $scope
-     *
-     * @param string $description
-     *
      * @return Scope
      */
-    public function createScope($scope, $description = null);
+    public function createScope(string $scope, string $description = '');
 
     /**
      * Find a single scope by the scope
-     *
-     * @param $scope
      * @return Scope
      */
-    public function findScopeByScope($scope);
+    public function findScopeByScope(string $scope);
 
     /**
      * Find all the scopes by an array of scopes

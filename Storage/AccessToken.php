@@ -8,7 +8,7 @@ use OAuth2\ServerBundle\Entity\Client;
 
 class AccessToken implements AccessTokenInterface
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $EntityManager)
     {
@@ -34,7 +34,9 @@ class AccessToken implements AccessTokenInterface
      */
     public function getAccessToken($oauth_token)
     {
-        $accessToken = $this->em->getRepository('OAuth2ServerBundle:AccessToken')->find($oauth_token);
+        /** @var \OAuth2\ServerBundle\Entity\AccessToken $accessToken */
+        $accessToken = $this->em->getRepository(\OAuth2\ServerBundle\Entity\AccessToken::class)
+            ->find($oauth_token);
 
         if (!$accessToken) {
             return null;
@@ -72,7 +74,8 @@ class AccessToken implements AccessTokenInterface
     public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null)
     {
         // Get Client Entity
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        /** @var Client $client */
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         if (!$client) {
             return null;

@@ -2,63 +2,45 @@
 
 namespace OAuth2\ServerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * Powma\ServiceBundle\Entity\User
+ * @ORM\Table(name="oauth_scope")
+ * @ORM\Entity()
  */
 class Scope
 {
     /**
-     * @var string
+     * @ORM\Column(name="scope", type="string", length=255)
+     * @ORM\Id
      */
-    private $scope;
+    private ?string $scope = null;
 
     /**
-     * @var string
+     * @ORM\Column(name="description", type="string", length=255)
      */
-    private $description;
+    private string $description;
 
-    /**
-     * Set scope
-     *
-     * @param  string $scope
-     * @return Scope
-     */
-    public function setScope($scope)
+    public function setScope(string $scope): self
     {
         $this->scope = $scope;
 
         return $this;
     }
 
-    /**
-     * Get scope
-     *
-     * @return string
-     */
-    public function getScope()
+    public function getScope(): ?string
     {
         return $this->scope;
     }
 
-    /**
-     * Set description
-     *
-     * @param  string $description
-     * @return Scope
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }

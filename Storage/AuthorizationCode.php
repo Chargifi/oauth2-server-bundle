@@ -8,7 +8,7 @@ use OAuth2\ServerBundle\Entity\Client;
 
 class AuthorizationCode implements AuthorizationCodeInterface
 {
-    private $em;
+    private EntityManager $em;
 
     public function __construct(EntityManager $EntityManager)
     {
@@ -44,7 +44,7 @@ class AuthorizationCode implements AuthorizationCodeInterface
     public function getAuthorizationCode($code)
     {
         // Get Code
-        $code = $this->em->getRepository('OAuth2ServerBundle:AuthorizationCode')->find($code);
+        $code = $this->em->getRepository(\OAuth2\ServerBundle\Entity\AuthorizationCode::class)->find($code);
 
         if (!$code) {
             return null;
@@ -87,7 +87,8 @@ class AuthorizationCode implements AuthorizationCodeInterface
      */
     public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null)
     {
-        $client = $this->em->getRepository('OAuth2ServerBundle:Client')->find($client_id);
+        /** @var Client $client */
+        $client = $this->em->getRepository(Client::class)->find($client_id);
 
         if (!$client) throw new \Exception('Unknown client identifier');
 
@@ -117,7 +118,7 @@ class AuthorizationCode implements AuthorizationCodeInterface
      */
     public function expireAuthorizationCode($code)
     {
-        $code = $this->em->getRepository('OAuth2ServerBundle:AuthorizationCode')->find($code);
+        $code = $this->em->getRepository(\OAuth2\ServerBundle\Entity\AuthorizationCode::class)->find($code);
         $this->em->remove($code);
         $this->em->flush();
     }

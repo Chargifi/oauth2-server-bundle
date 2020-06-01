@@ -4,19 +4,19 @@ namespace OAuth2\ServerBundle\Storage;
 
 use OAuth2\Storage\UserCredentialsInterface;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use OAuth2\ServerBundle\User\OAuth2UserInterface;
-use OAuth2\ServerBundle\User\AdvancedOAuth2UserInterface;
 
 class UserCredentials implements UserCredentialsInterface
 {
-    private $em;
-    private $up;
-    private $encoderFactory;
+    private EntityManager $em;
+    private UserProviderInterface $up;
+    private EncoderFactoryInterface $encoderFactory;
 
-    public function __construct(EntityManager $entityManager, UserProviderInterface $userProvider, EncoderFactoryInterface $encoderFactory)
+    public function __construct(EntityManager $entityManager, UserProviderInterface $userProvider,
+                                EncoderFactoryInterface $encoderFactory)
     {
         $this->em = $entityManager;
         $this->up = $userProvider;
@@ -51,20 +51,13 @@ class UserCredentials implements UserCredentialsInterface
         // Load user by username
         try {
             $user = $this->up->loadUserByUsername($username);
-        } catch (\Symfony\Component\Security\Core\Exception\UsernameNotFoundException $e) {
+        } catch (UsernameNotFoundException $e) {
             return false;
         }
 
-        // Do extra checks if implementing the AdvancedUserInterface
-        if ($user instanceof AdvancedUserInterface) {
-            if ($user->isAccountNonExpired() === false) return false;
-            if ($user->isAccountNonLocked() === false) return false;
-            if ($user->isCredentialsNonExpired() === false) return false;
-            if ($user->isEnabled() === false) return false;
-        }
-
         // Check password
-        if ($this->encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
+        if ($this->encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(), $password,
+                $user->getSalt())) {
             return true;
         }
 
@@ -88,21 +81,21 @@ class UserCredentials implements UserCredentialsInterface
         // Load user by username
         try {
             $user = $this->up->loadUserByUsername($username);
-        } catch (\Symfony\Component\Security\Core\Exception\UsernameNotFoundException $e) {
+        } catch (UsernameNotFoundException $e) {
             return false;
         }
 
         // If user implements OAuth2UserInterface or AdvancedOAuth2UserInterface
         // then we can get the scopes, score!
-        if ($user instanceof OAuth2UserInterface || $user instanceof AdvancedOAuth2UserInterface) {
+        if ($user instanceof OAuth2UserInterface) {
             $scope = $user->getScope();
         } else {
             $scope = null;
         }
 
-        return array(
+        return [
             'user_id' => $user->getUsername(),
             'scope' => $scope
-        );
+        ];
     }
 }
