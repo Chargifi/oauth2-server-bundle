@@ -31,17 +31,17 @@ services:
 
     Controller\AuthorizeController:
         arguments:
-            '@oauth2.server'
-            '@oauth2.request'
-            '@oauth2.response'
-            '@twig.environment'
-            '@oauth2.storage.scope'
+            - '@oauth2.server'
+            - '@oauth2.request'
+            - '@oauth2.response'
+            - '@twig.environment'
+            - '@oauth2.storage.scope'
 
     Controller\VerifyController:
         arguments:
-            '@oauth2.server'
-            '@oauth2.request'
-            '@oauth2.response'
+            - '@oauth2.server'
+            - '@oauth2.request'
+            - '@oauth2.response'
 
     Controller\TokenController:
         arguments:
