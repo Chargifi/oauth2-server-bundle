@@ -34,7 +34,7 @@ services:
             - '@oauth2.server'
             - '@oauth2.request'
             - '@oauth2.response'
-            - '@twig.environment'
+            - '@twig'
             - '@oauth2.storage.scope'
 
     Controller\VerifyController:
@@ -48,7 +48,7 @@ services:
             - '@oauth2.server'
             - '@oauth2.request'
             - '@oauth2.response'
-            - '@event.dispatcher'
+            - '@event_dispatcher'
             - '@oauth2.grant_type.client_credentials'
             - '@oauth2.grant_type.authorization_code'
             - '@oauth2.grant_type.refresh_token'
