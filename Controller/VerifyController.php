@@ -2,12 +2,36 @@
 
 namespace OAuth2\ServerBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OAuth2\Request;
+use OAuth2\Response;
+use OAuth2\Server;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class VerifyController extends AbstractController
+class VerifyController
 {
+    /**
+     * @var Server
+     */
+    private $server;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Response
+     */
+    private $response;
+
+    public function __construct($server, $request, $response)
+    {
+        $this->server = $server;
+        $this->request = $request;
+        $this->response = $response;
+    }
+
     /**
      * This is called with an access token, details
      * about the access token are then returned.
@@ -17,13 +41,11 @@ class VerifyController extends AbstractController
      */
     public function verifyAction()
     {
-        $server = $this->get('oauth2.server');
-
-        if (!$server->verifyResourceRequest($this->get('oauth2.request'), $this->get('oauth2.response'))) {
-            return $server->getResponse();
+        if (!$this->server->verifyResourceRequest($this->request, $this->response)) {
+            return $this->server->getResponse();
         }
 
-        $tokenData = $server->getAccessTokenData($this->get('oauth2.request'), $this->get('oauth2.response'));
+        $tokenData = $this->server->getAccessTokenData($this->request, $this->response);
 
         return new JsonResponse($tokenData);
     }

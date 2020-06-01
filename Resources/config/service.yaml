@@ -1,0 +1,196 @@
+parameters:
+    oauth2.server.class: 'OAuth2\Server'
+    oauth2.request.class: 'OAuth2\HttpFoundationBridge\Request'
+    oauth2.request_factory.class: 'OAuth2\HttpFoundationBridge\Request'
+    oauth2.response.class: 'OAuth2\HttpFoundationBridge\Response'
+    oauth2.storage.client_credentials.class: 'OAuth2\ServerBundle\Storage\ClientCredentials'
+    oauth2.storage.access_token.class: 'OAuth2\ServerBundle\Storage\AccessToken'
+    oauth2.storage.authorization_code.class: 'OAuth2\ServerBundle\Storage\AuthorizationCode'
+    oauth2.storage.user_credentials.class: 'OAuth2\ServerBundle\Storage\UserCredentials'
+    oauth2.storage.refresh_token.class: 'OAuth2\ServerBundle\Storage\RefreshToken'
+    oauth2.storage.scope.class: 'OAuth2\ServerBundle\Storage\Scope'
+    oauth2.storage.public_key.class: 'OAuth2\Storage\Memory'
+    oauth2.storage.user_claims.class: 'OAuth2\Storage\Memory'
+    oauth2.grant_type.client_credentials.class: 'OAuth2\GrantType\ClientCredentials'
+    oauth2.grant_type.authorization_code.class: 'OAuth2\GrantType\AuthorizationCode'
+    oauth2.grant_type.refresh_token.class: 'OAuth2\GrantType\RefreshToken'
+    oauth2.grant_type.user_credentials.class: 'OAuth2\GrantType\UserCredentials'
+    oauth2.user_provider.class: 'OAuth2\ServerBundle\User\OAuth2UserProvider'
+    oauth2.client_manager.class: 'OAuth2\ServerBundle\Manager\ClientManager'
+    oauth2.scope_manager.class: 'OAuth2\ServerBundle\Manager\ScopeManager'
+    oauth2.create_client_command.class: 'OAuth2\ServerBundle\Command\CreateClientCommand'
+    oauth2.create_scope_command.class: 'OAuth2\ServerBundle\Command\CreateScopeCommand'
+    oauth2.create_user_command.class: 'OAuth2\ServerBundle\Command\CreateUserCommand'
+    oauth2.server.config: {}
+
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: true
+
+    Controller\AuthorizeController:
+        arguments:
+            - '@oauth2.server'
+            - '@oauth2.request'
+            - '@oauth2.response'
+            - '@twig.environment'
+            - '@oauth2.storage.scope'
+
+    Controller\VerifyController:
+        arguments:
+            - '@oauth2.server'
+            - '@oauth2.request'
+            - '@oauth2.response'
+
+    Controller\TokenController:
+        arguments:
+            - '@oauth2.server'
+            - '@oauth2.request'
+            - '@oauth2.response'
+            - '@event.dispatcher'
+            - '@oauth2.grant_type.client_credentials'
+            - '@oauth2.grant_type.authorization_code'
+            - '@oauth2.grant_type.refresh_token'
+            - '@oauth2.grant_type.user_credentials'
+
+    oauth2.server:
+        class: '%oauth2.server.class%'
+        arguments:
+            - { client_credentials: '@oauth2.storage.client_credentials',
+                access_token: '@oauth2.storage.access_token',
+                authorization_code: '@oauth2.storage.authorization_code',
+                user_credentials: '@oauth2.storage.user_credentials',
+                refresh_token: '@oauth2.storage.refresh_token',
+                scope: '@oauth2.storage.scope',
+                public_key: '@oauth2.storage.public_key',
+                user_claims: '@oauth2.storage.user_claims' }
+            - '%oauth2.server.config%'
+
+    oauth2.request:
+        class: '%oauth2.request.class%'
+        arguments:
+            - '@request_stack'
+        factory:
+            - 'OAuth2\HttpFoundationBridge\Request'
+            - 'createFromRequestStack'
+
+    oauth2.response:
+        class: '%oauth2.response.class%'
+
+    oauth2.user_provider:
+        class: '%oauth2.user_provider.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@security.encoder_factory'
+
+    oauth2.scope_manager:
+        class: '%oauth2.scope_manager.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    oauth2.storage.client_credentials:
+        class: '%oauth2.storage.client_credentials.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    oauth2.storage.authorization_code:
+        class: '%oauth2.storage.authorization_code.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    oauth2.storage.user_credentials:
+        class: '%oauth2.storage.user_credentials.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oauth2.user_provider'
+            - '@security.encoder_factory'
+
+    oauth2.storage.access_token:
+        class: '%oauth2.storage.access_token.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    oauth2.storage.refresh_token:
+        class: '%oauth2.storage.refresh_token.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    oauth2.storage.scope:
+        class: '%oauth2.storage.scope.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oauth2.scope_manager'
+
+    oauth2.storage.public_key:
+        class: '%oauth2.storage.public_key.class%'
+
+    oauth2.storage.user_claims:
+        class: '%oauth2.storage.user_claims.class%'
+
+    oauth2.grant_type.client_credentials:
+        class: '%oauth2.grant_type.client_credentials.class%'
+        arguments:
+            - '@oauth2.storage.client_credentials'
+
+    oauth2.grant_type.authorization_code:
+        class: '%oauth2.grant_type.authorization_code.class%'
+        arguments:
+            - '@oauth2.storage.authorization_code'
+
+    oauth2.grant_type.user_credentials:
+        class: '%oauth2.grant_type.user_credentials.class%'
+        arguments:
+            - '@oauth2.storage.user_credentials'
+
+    oauth2.grant_type.refresh_token:
+        class: '%oauth2.grant_type.refresh_token.class%'
+        arguments:
+            - '@oauth2.storage.refresh_token'
+            - { always_issue_new_refresh_token: false }
+
+    oauth2.client_manager:
+        class: '%oauth2.client_manager.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oauth2.scope_manager'
+
+    oauth2.create_client_command:
+        class: '%oauth2.create_client_command.class%'
+        tags:
+            - { name: console.command }
+        arguments:
+            - '@oauth2.client_manager'
+
+    oauth2.create_scope_command:
+        class: '%oauth2.create_scope_command.class%'
+        tags:
+            - { name: console.command }
+        arguments:
+            - '@oauth2.scope_manager'
+
+    oauth2.create_user_command:
+        class: '%oauth2.create_user_command.class%'
+        tags:
+            - { name: console.command }
+        arguments:
+            - '@oauth2.user_provider'
+
+#    # Aliases for auto wiring
+#    OAuth2\ServerBundle\ServerInterface: '@oauth2.server'
+#    OAuth2\ServerBundle\RequestInterface: '@oauth2.request'
+#    OAuth2\ServerBundle\ResponseInterface: '@oauth2.response'
+#    OAuth2\ServerBundle\UserProviderInterface: '@oauth2.user_provider'
+#    OAuth2\ServerBundle\Manager\ScopeInterface: '@oauth2.scope_manager'
+#    OAuth2\ServerBundle\Manager\ClientInterface: '@oauth2.client_manager'
+#    OAuth2\ServerBundle\Storage\ClientCredentialsInterface: '@oauth2.storage.client_credentials'
+#    OAuth2\ServerBundle\Storage\AuthorizationCodeInterface: '@oauth2.storage.authorization_code'
+#    OAuth2\ServerBundle\Storage\UserCredentialsInterface: '@oauth2.storage.user_credentials'
+#    OAuth2\ServerBundle\Storage\AccessTokenInterface: '@oauth2.storage.access_token'
+#    OAuth2\ServerBundle\Storage\RefreshTokenInterface: '@oauth2.storage.refresh_token'
+#    OAuth2\ServerBundle\Storage\PublicKeyInterface: '@oauth2.storage.public_key'
+#    OAuth2\ServerBundle\Storage\UserClaimsInterface: '@oauth2.storage.user_claims'
+#    OAuth2\ServerBundle\GrantType\ClientCredentialsInterface: '@oauth2.grant_type.client_credentials'
+#    OAuth2\ServerBundle\GrantType\AuthorizationCodeInterface: '@oauth2.grant_type.authorization_code'
+#    OAuth2\ServerBundle\GrantType\UserCredentialsInterface: '@oauth2.grant_type.user_credentials'
+#    OAuth2\ServerBundle\GrantType\RefreshTokenInterface: '@oauth2.grant_type.refresh_token'

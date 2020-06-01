@@ -2,36 +2,70 @@
 
 namespace OAuth2\ServerBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OAuth2\Request;
+use OAuth2\Response;
+use OAuth2\Server;
+use OAuth2\ServerBundle\Storage\Scope;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Twig\Environment;
 
-class AuthorizeController extends AbstractController
+class AuthorizeController
 {
+    /**
+     * @var Server
+     */
+    private $server;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Response
+     */
+    private $response;
+
+    /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
+     * @var Scope
+     */
+    private $scopeStorage;
+
+    public function __construct($server, $request, $response, $environment, $scopeStorage)
+    {
+        $this->server = $server;
+        $this->request = $request;
+        $this->response = $response;
+        $this->environment = $environment;
+        $this->scopeStorage = $scopeStorage;
+    }
+
     /**
      * @Route("/authorize", name="_authorize_validate", methods="GET")
      */
     public function validateAuthorizeAction()
     {
-        $server = $this->get('oauth2.server');
-
-        if (!$server->validateAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'))) {
-            return $server->getResponse();
+        if (!$this->server->validateAuthorizeRequest($this->request, $this->response)) {
+            return $this->server->getResponse();
         }
 
         // Get descriptions for scopes if available
         $scopes = array();
-        $scopeStorage = $this->get('oauth2.storage.scope');
-        foreach (explode(' ', $this->get('oauth2.request')->query->get('scope')) as $scope) {
-            $scopes[] = $scopeStorage->getDescriptionForScope($scope);
+        foreach (explode(' ', $this->request->query->get('scope')) as $scope) {
+            $scopes[] = $this->scopeStorage->getDescriptionForScope($scope);
         }
 
         $qs = array_intersect_key(
-            $this->get('oauth2.request')->query->all(),
+            $this->request->query->all(),
             array_flip(explode(' ', 'response_type client_id redirect_uri scope state nonce'))
         );
 
-        return $this->render('OAuth2ServerBundle:Authorize:authorize.html.twig', [
+        return $this->environment->render('OAuth2ServerBundle:Authorize:authorize.html.twig', [
             'qs' => $qs,
             'scopes' => $scopes,
         ]);
@@ -40,10 +74,8 @@ class AuthorizeController extends AbstractController
     /**
      * @Route("/authorize", name="_authorize_handle", methods="POST")
      */
-    public function handleAuthorizeAction()
+    public function handleAuthorizeAction(Server $server, Request $request, Response $response)
     {
-        $server = $this->get('oauth2.server');
-
-        return $server->handleAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'), true);
+        return $server->handleAuthorizeRequest($request, $response, true);
     }
 }
