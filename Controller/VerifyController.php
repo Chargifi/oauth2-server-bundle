@@ -2,11 +2,11 @@
 
 namespace OAuth2\ServerBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class VerifyController extends Controller
+class VerifyController extends AbstractController
 {
     /**
      * This is called with an access token, details
