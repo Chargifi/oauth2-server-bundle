@@ -21,7 +21,7 @@ parameters:
     oauth2.create_client_command.class: 'OAuth2\ServerBundle\Command\CreateClientCommand'
     oauth2.create_scope_command.class: 'OAuth2\ServerBundle\Command\CreateScopeCommand'
     oauth2.create_user_command.class: 'OAuth2\ServerBundle\Command\CreateUserCommand'
-    oauth2.server.config: {}
+    oauth2.server.config: ~
 
 services:
     _defaults:
