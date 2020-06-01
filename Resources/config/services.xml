@@ -93,15 +93,15 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="oauth2.scope_manager"/>
         </service>
-        <service id="oauth2.create_client_command" class="%oauth2.create_client_command.class%">
+        <service id="oauth2.create_client_command" class="%oauth2.create_client_command.class%" public="true">
             <tag name="console.command"/>
             <argument type="service" id="oauth2.client_manager" />
         </service>
-        <service id="oauth2.create_scope_command" class="%oauth2.create_scope_command.class%">
+        <service id="oauth2.create_scope_command" class="%oauth2.create_scope_command.class%" public="true">
             <tag name="console.command"/>
             <argument type="service" id="oauth2.scope_manager" />
         </service>
-        <service id="oauth2.create_user_command" class="%oauth2.create_user_command.class%">
+        <service id="oauth2.create_user_command" class="%oauth2.create_user_command.class%" public="true">
             <tag name="console.command"/>
             <argument type="service" id="oauth2.user_provider" />
         </service>
