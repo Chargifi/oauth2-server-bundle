@@ -31,17 +31,17 @@ services:
 
     Controller\AuthorizeController:
         arguments:
-            - '@oauth2.server'
-            - '@oauth2.request'
-            - '@oauth2.response'
-            - '@twig.environment'
-            - '@oauth2.storage.scope'
+            '@oauth2.server'
+            '@oauth2.request'
+            '@oauth2.response'
+            '@twig.environment'
+            '@oauth2.storage.scope'
 
     Controller\VerifyController:
         arguments:
-            - '@oauth2.server'
-            - '@oauth2.request'
-            - '@oauth2.response'
+            '@oauth2.server'
+            '@oauth2.request'
+            '@oauth2.response'
 
     Controller\TokenController:
         arguments:
@@ -57,14 +57,14 @@ services:
     oauth2.server:
         class: '%oauth2.server.class%'
         arguments:
-            - { client_credentials: '@oauth2.storage.client_credentials',
-                access_token: '@oauth2.storage.access_token',
-                authorization_code: '@oauth2.storage.authorization_code',
-                user_credentials: '@oauth2.storage.user_credentials',
-                refresh_token: '@oauth2.storage.refresh_token',
-                scope: '@oauth2.storage.scope',
-                public_key: '@oauth2.storage.public_key',
-                user_claims: '@oauth2.storage.user_claims' }
+            - client_credentials: '@oauth2.storage.client_credentials'
+              access_token: '@oauth2.storage.access_token'
+              authorization_code: '@oauth2.storage.authorization_code'
+              user_credentials: '@oauth2.storage.user_credentials'
+              refresh_token: '@oauth2.storage.refresh_token'
+              scope: '@oauth2.storage.scope'
+              public_key: '@oauth2.storage.public_key'
+              user_claims: '@oauth2.storage.user_claims'
             - '%oauth2.server.config%'
 
     oauth2.request:
