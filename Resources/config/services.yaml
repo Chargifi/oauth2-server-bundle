@@ -29,7 +29,7 @@ services:
         autoconfigure: false
         public: true
 
-    Controller\AuthorizeController:
+    OAuth2\ServerBundle\Controller\AuthorizeController:
         arguments:
             - '@oauth2.server'
             - '@oauth2.request'
@@ -37,13 +37,13 @@ services:
             - '@twig'
             - '@oauth2.storage.scope'
 
-    Controller\VerifyController:
+    OAuth2\ServerBundle\Controller\VerifyController:
         arguments:
             - '@oauth2.server'
             - '@oauth2.request'
             - '@oauth2.response'
 
-    Controller\TokenController:
+    OAuth2\ServerBundle\Controller\TokenController:
         arguments:
             - '@oauth2.server'
             - '@oauth2.request'
