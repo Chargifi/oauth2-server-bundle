@@ -33,7 +33,7 @@ class RefreshToken
 
     /**
      * @ORM\ManyToOne(targetEntity="Client")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="client_id", onDelete="CASCADE", onUpdate="CASCADE")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="client_id", onDelete="CASCADE")
      */
     private ?Client $client = null;
 
