@@ -22,7 +22,7 @@ class RefreshToken
     private ?string $user_id = null;
 
     /**
-     * @ORM\Column(name="token", type="datetime")
+     * @ORM\Column(name="expires", type="datetime")
      */
     private \DateTimeInterface $expires;
 
