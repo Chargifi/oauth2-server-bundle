@@ -2,7 +2,7 @@
 
 namespace OAuth2\ServerBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class OauthTokenResponseErrorEvent extends Event
 {

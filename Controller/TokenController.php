@@ -96,7 +96,8 @@ class TokenController
             $oauthTokenRequestErrorEvent = new OauthTokenResponseErrorEvent($newResponse->getStatusCode(),
                 $newResponse->getParameter('error'), $newResponse->getParameter('error_description'),
                 $requestParameters);
-            $eventDispatcher->dispatch($oauthTokenRequestErrorEvent, OauthTokenResponseErrorEvent::NAME);
+            $this->eventDispatcher->dispatch($oauthTokenRequestErrorEvent,
+                OauthTokenResponseErrorEvent::NAME);
         }
 
         return $newResponse;
